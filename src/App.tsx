@@ -1,4 +1,5 @@
 import Sidebar from './components/Sidebar.tsx'
+import Topbar from './components/Topbar.tsx'
 
 //This is the parent of the entire web app.
 function App() {
@@ -6,7 +7,8 @@ function App() {
         //Use 'className' instead of 'class'
         <div className="app">
             <Sidebar />
-            <main className="app__main">
+            <main className="main">
+                <Topbar />
             </main>
         </div>
     )
