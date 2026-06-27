@@ -12,3 +12,9 @@ export interface TaskTypes {
   done: boolean
   tag?: TagKind
 }
+
+export interface PageHeaderTypes {
+  title: string
+  subtitle?: string
+  actionLabel?: string
+}

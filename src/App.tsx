@@ -1,9 +1,10 @@
+import { Routes, Route } from 'react-router-dom'
 import Sidebar from './components/Sidebar'
-import Topbar from './components/Topbar'
-import StatsGrid from './components/StatsGrid'
-import WeeklyGoals from './components/WeeklyGoals'
-import ProgressReport from './components/ProgressReport'
-import TasksForToday from './components/TasksForToday'
+
+//Pages
+import Dashboard from './pages/Dashboard'
+import MyTasks from './pages/MyTasks'
+
 
 //This is the parent of the entire web app.
 function App() {
@@ -12,14 +13,10 @@ function App() {
         <div className="app">
             <Sidebar />
             <main className="main">
-                <Topbar />
-                <StatsGrid />
-
-                <section className="dashboard-grid">
-                    <WeeklyGoals />
-                    <ProgressReport />
-                    <TasksForToday />
-                </section>
+                <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/tasks" element={<MyTasks />} />
+                </Routes>
             </main>
         </div>
     )

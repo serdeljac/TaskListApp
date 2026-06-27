@@ -1,12 +1,13 @@
+import { NavLink } from 'react-router-dom'
 
 //Array of items for the sidebar
 const NAVIGATION_ITEMS = [
-    { label: 'Dashboard', icon: '▦', active: true },
-    { label: 'My Tasks', icon: '☑', active: false },
-    { label: 'Weekly Goals', icon: '◎', active: false },
-    { label: 'Calendar', icon: '▤', active: false },
-    { label: 'Reports', icon: '▥', active: false },
-    { label: 'Notes', icon: '✎', active: false },
+    { label: 'Dashboard', icon: '▦', to: '/' },
+    { label: 'My Tasks', icon: '☑', to: '/tasks' },
+    { label: 'Weekly Goals', icon: '◎', to: '/goals' },
+    { label: 'Calendar', icon: '▤', to: '/calendar' },
+    { label: 'Reports', icon: '▥', to: '/reports' },
+    { label: 'Notes', icon: '✎', to: '/notes' },
 ]
 
 function Sidebar() {
@@ -21,9 +22,11 @@ function Sidebar() {
 
             <nav className="sidebar__nav">
                 {NAVIGATION_ITEMS.map(o => (
-                    <a key={o.label} href="#" className={`sidebar__link ${o.active ? 'sidebar__link--active' : ''}`}>
-                        <span className="sidebar__link-icon">{o.icon}</span>{o.label}
-                    </a>
+                    <NavLink key={o.label} to={o.to} end={o.to === '/'} className={({ isActive }) =>
+                        `sidebar__link ${isActive ? 'sidebar__link--active' : ''}`}>
+                    <span className="sidebar__link-icon">{o.icon}</span>
+                    {o.label}
+                    </NavLink>
                 ))}
             </nav>
 
