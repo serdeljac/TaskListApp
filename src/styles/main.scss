@@ -1,0 +1,144 @@
+@use 'variables' as *;
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: $font-stack;
+    color: $text;
+    background: $bg;
+    line-height: 1.4;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+.app {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main {
+    flex: 1;
+    padding: 1.75rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-width: 0; // lets grid/flex children shrink instead of overflowing
+}
+
+/* ---------- sidebar ---------- */
+.sidebar {
+    width: $sidebar-w;
+    flex-shrink: 0;
+    background: $surface;
+    border-right: 1px solid $border;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+
+    &__brand {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0 0.5rem;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    &__logo {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        background: $primary;
+        color: #fff;
+        font-size: 0.9rem;
+    }
+
+    &__nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    &__link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.65rem 0.75rem;
+        border-radius: $radius-sm;
+        color: $text-muted;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: background 0.15s ease, color 0.15s ease;
+
+        &:hover {
+            background: $bg;
+            color: $text;
+        }
+
+        &--active {
+            background: $primary-soft;
+            color: $primary;
+        }
+    }
+
+    &__link-icon {
+        width: 18px;
+        text-align: center;
+    }
+
+    &__footer {
+        margin-top: auto; // pushes this block to the bottom of the sidebar
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    &__theme {
+        font-size: 0.9rem;
+        color: $text-muted;
+        padding: 0 0.5rem;
+    }
+
+    &__user {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.5rem;
+        border-radius: $radius-sm;
+        background: $bg;
+    }
+
+    &__avatar {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: $primary;
+        color: #fff;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    &__user-name {
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+}
