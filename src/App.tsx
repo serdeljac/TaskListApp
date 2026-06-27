@@ -1,5 +1,6 @@
 import Sidebar from './components/Sidebar.tsx'
 import Topbar from './components/Topbar.tsx'
+import StatsGrid from './components/StatsGrid.tsx'
 
 //This is the parent of the entire web app.
 function App() {
@@ -9,6 +10,7 @@ function App() {
             <Sidebar />
             <main className="main">
                 <Topbar />
+                <StatsGrid />
             </main>
         </div>
     )

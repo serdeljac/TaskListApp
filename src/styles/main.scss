@@ -199,3 +199,52 @@ ul {
     }
 }
 
+/* ---------- stat cards ---------- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+}
+
+.stat-card {
+    background: $surface;
+    border: 1px solid $border;
+    border-radius: $radius;
+    box-shadow: $shadow;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+
+    &__icon {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1.1;
+    }
+
+    &__label {
+        font-size: 0.85rem;
+        color: $text-muted;
+    }
+
+    &__hint {
+        font-size: 0.75rem;
+        color: $text-muted;
+        opacity: 0.8;
+    }
+}
