@@ -1,5 +1,6 @@
 import PageHeader from '../components/PageHeader'
 import type { TaskTypes } from '../types/types'
+import { useState, useEffect, type ReactNode } from 'react'
 
 const FILTERS = ['All', 'Active', 'Completed']
 
@@ -11,42 +12,60 @@ interface TaskRow extends TaskTypes {
 
 //This is just a substitute
 const TASK_LIST: TaskRow[] = [
-    { id: 't1', text: 'Outline project proposal', done: false, tag: 'work', due: 'Today', priority: 'High' },
-    { id: 't2', text: 'Morning workout', done: true, tag: 'health', due: 'Today', priority: 'Medium' },
-    { id: 't3', text: 'Reply to client emails', done: false, tag: 'work', due: 'Tomorrow', priority: 'High' },
-    { id: 't4', text: 'Read chapter 4', done: false, tag: 'personal', due: 'May 18', priority: 'Low' },
-    { id: 't5', text: 'Plan weekend trip', done: false, tag: 'personal', due: 'May 19', priority: 'Low' },
-    { id: 't6', text: 'Team retro notes', done: true, tag: 'work', due: 'Yesterday', priority: 'Medium' },
+    // { id: 't1', text: 'Outline project proposal', done: false, tag: 'work', due: 'Today', priority: 'High' },
+    // { id: 't2', text: 'Morning workout', done: true, tag: 'health', due: 'Today', priority: 'Medium' },
+    // { id: 't3', text: 'Reply to client emails', done: false, tag: 'work', due: 'Tomorrow', priority: 'High' },
+    // { id: 't4', text: 'Read chapter 4', done: false, tag: 'personal', due: 'May 18', priority: 'Low' },
+    // { id: 't5', text: 'Plan weekend trip', done: false, tag: 'personal', due: 'May 19', priority: 'Low' },
+    // { id: 't6', text: 'Team retro notes', done: true, tag: 'work', due: 'Yesterday', priority: 'Medium' },
 ]
 
-function MyTasks() {
+export const Header = () => {
     return (
         <>
-        <PageHeader
-            title="My Tasks"
-            subtitle="All your tasks in one place."
-            actionLabel="+ New Task"
-        />
+            <PageHeader
+                title="My Tasks"
+                subtitle="All your tasks in one place."
+                actionLabel="+ New Task"/>
 
-        <div className="filter-bar">
-            {FILTERS.map((f, i) => (
-            <button key={f} type="button" className={`chip ${i === 0 ? 'chip--active' : ''}`}>
-                {f}
-            </button>
-            ))}
-        </div>
+            <div className="filter-bar">
+                {FILTERS.map((f, i) => (
+                <button key={f} type="button" className={`chip ${i === 0 ? 'chip--active' : ''}`}>
+                    {f}
+                </button>
+                ))}
+            </div>
+            
+        </>
+    )
+}
 
-        <article className="card">
-            <ul className="task-table">
-            <li className="task-table__head">
-                <span>Task</span>
-                <span>Category</span>
-                <span>Due</span>
-                <span>Priority</span>
-            </li>
+export const TaskTable = () => {
+    const blankList = <li className="task-table__row noTasks">Nothing to Display</li>
+    const resultsHTML: ReactNode = TASK_LIST.length === 0 ? blankList : getList()
 
+    return (
+        <>
+            <article className="card">
+                <ul className="task-table">
+                <li className="task-table__head">
+                    <span>Task</span>
+                    <span>Category</span>
+                    <span>Due</span>
+                    <span>Priority</span>
+                </li>
+                {resultsHTML}
+                </ul>
+            </article>
+        </>
+    )
+}
+
+function getList() {
+    return (
+        <>
             {TASK_LIST.map((o) => (
-                <li className={`task-table__row ${o.done ? 'task-table__row--done' : ''}`} key={o.id}>
+                        <li className={`task-table__row ${o.done ? 'task-table__row--done' : ''}`} key={o.id}>
                 <span className="task-table__cell task-table__cell--main">
                     <input className="task__check" type="checkbox" defaultChecked={o.done} />
                     {o.text}
@@ -60,10 +79,19 @@ function MyTasks() {
                 </span>
                 </li>
             ))}
-            </ul>
-        </article>
-    </>
+        </>
     )
 }
 
-export default MyTasks
+
+
+function Assembly() {
+    return (
+        <>
+            <Header />
+            <TaskTable />
+        </>
+    )
+}
+
+export default Assembly
