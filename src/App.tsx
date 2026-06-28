@@ -4,7 +4,10 @@ import Sidebar from './components/Sidebar'
 //Pages
 import Dashboard from './pages/Dashboard'
 import MyTasks from './pages/MyTasks'
-
+import WeeklyGoals from './pages/WeeklyGoals'
+import Calendar from './pages/Calendar'
+import Reports from './pages/Reports'
+import Notes from './pages/Notes'
 
 //This is the parent of the entire web app.
 function App() {
@@ -16,6 +19,10 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/tasks" element={<MyTasks />} />
+                    <Route path="/goals" element={<WeeklyGoals />} />
+                    <Route path="/calendar" element={<Calendar />} />
+                    <Route path="/reports" element={<Reports />} />
+                    <Route path="/notes" element={<Notes />} />
                 </Routes>
             </main>
         </div>
