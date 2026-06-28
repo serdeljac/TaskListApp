@@ -200,6 +200,21 @@ ul {
             filter: brightness(1.08);
         }
     }
+
+    &--ghost {
+        background: transparent;
+        color: $text-muted;
+
+        &:hover {
+            background: $bg;
+        }
+    }
+
+    // Applies to any disabled button — e.g. Submit before all fields are filled.
+    &:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+    }
 }
 
 /* ---------- stat cards ---------- */
