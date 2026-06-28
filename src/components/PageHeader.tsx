@@ -1,6 +1,6 @@
 import type { PageHeaderTypes } from '../types/types'
 
-function PageHeader({ title, subtitle, actionLabel }: PageHeaderTypes) {
+function PageHeader({ title, subtitle, actionLabel, onAction }: PageHeaderTypes) {
     return (
         <header className="page-header">
         <div>
@@ -8,7 +8,7 @@ function PageHeader({ title, subtitle, actionLabel }: PageHeaderTypes) {
             {subtitle && <p className="page-header__subtitle">{subtitle}</p>}
         </div>
         {actionLabel && (
-            <button className="btn btn--primary" type="button">{actionLabel}</button>
+            <button className="btn btn--primary" type="button" onClick={onAction}>{actionLabel}</button>
         )}
         </header>
     )

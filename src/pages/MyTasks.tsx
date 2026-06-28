@@ -1,6 +1,8 @@
 import PageHeader from '../components/PageHeader'
+import NewTaskForm from '../components/NewTaskForm'
+
 import type { TaskTypes } from '../types/types'
-import { useState, useEffect, type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 
 const FILTERS = ['All', 'Active', 'Completed']
 
@@ -12,7 +14,7 @@ interface TaskRow extends TaskTypes {
 
 //This is just a substitute
 const TASK_LIST: TaskRow[] = [
-    // { id: 't1', text: 'Outline project proposal', done: false, tag: 'work', due: 'Today', priority: 'High' },
+    { id: 't1', text: 'Outline project proposal', done: false, tag: 'work', due: 'Today', priority: 'High' },
     // { id: 't2', text: 'Morning workout', done: true, tag: 'health', due: 'Today', priority: 'Medium' },
     // { id: 't3', text: 'Reply to client emails', done: false, tag: 'work', due: 'Tomorrow', priority: 'High' },
     // { id: 't4', text: 'Read chapter 4', done: false, tag: 'personal', due: 'May 18', priority: 'Low' },
@@ -21,12 +23,19 @@ const TASK_LIST: TaskRow[] = [
 ]
 
 export const Header = () => {
+
+    //Variables
+   const [isFormOpen, setFormOpen] = useState(false)
+
     return (
         <>
             <PageHeader
                 title="My Tasks"
                 subtitle="All your tasks in one place."
-                actionLabel="+ New Task"/>
+                actionLabel="+ New Task"
+                onAction={() => setFormOpen(true)}/>
+
+            {isFormOpen && <NewTaskForm onCancel={() => setFormOpen(false)}/>}
 
             <div className="filter-bar">
                 {FILTERS.map((f, i) => (

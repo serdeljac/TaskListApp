@@ -17,6 +17,7 @@ export interface PageHeaderTypes {
   title: string
   subtitle?: string
   actionLabel?: string
+  onAction?: () => void
 }
 
 export interface NoteTypes {
