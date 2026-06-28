@@ -44,3 +44,13 @@ export interface StatCardTypes {
     hint?: string,
     accent?: string
 }
+
+// A task created via the New Task form and saved to localStorage.
+export interface StoredTaskTypes {
+  id: string
+  name: string
+  category: string
+  priority: string
+  completed: boolean
+  dueDate: string // the value from <input type="date">, e.g. "2026-07-01"
+}

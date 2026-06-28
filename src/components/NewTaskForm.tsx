@@ -1,17 +1,27 @@
 import { useState } from 'react'
+import type { StoredTaskTypes } from '../types/types'
+
 interface NewTaskFormProps {
     // Called when the user wants to close the popup (e.g. clicks Cancel).
     onCancel: () => void
+    //This means task generated the StoredTaskTypes WITHOUT id. id is generated later!
+    onSubmit: (task: Omit<StoredTaskTypes, 'id'| 'completed'>) => void
 }
 
-function NewTaskForm({ onCancel}: NewTaskFormProps) {
+function NewTaskForm({ onCancel, onSubmit}: NewTaskFormProps) {
 
     const [name, setName] = useState('')
     const [category, setCategory] = useState('')
-    const [date, setDate] = useState('')
+    const [priority, setPriority] = useState('')
+    const [dueDate, setDate] = useState('')
+    const checkSubmitAllowed = name.trim() !== '' && category.trim() !== '' && dueDate.trim() !== '' && priority.trim() !== ''
 
-
-    const checkSubmitAllowed = name.trim() !== '' && category.trim() !== '' && date.trim() !== ''
+    function handleSubmit() {
+        //Prevents submit when not valid
+        if (!checkSubmitAllowed) return
+        //Submit this object Array 
+        onSubmit({ name: name.trim(), category, priority, dueDate })
+    }
 
     return (
 
@@ -45,13 +55,28 @@ function NewTaskForm({ onCancel}: NewTaskFormProps) {
                 </div>
 
                 <div className="form-field">
+                    <label className="form-field__label" htmlFor="task-category" >Priority</label>
+                        <select id="task-category" className="form-field__input" 
+                        onChange={(event) => setPriority(event.target.value)}>
+                        <option value="">Select a Priority</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+
+                <div className="form-field">
                     <label className="form-field__label" htmlFor="task-due">Due date</label>
                     <input id="task-due" className="form-field__input" type="date" onChange={(event) => setDate(event.target.value)}/>
                 </div>
 
                 <div className="modal__actions">
                     <button type="button" className="btn btn--ghost" onClick={onCancel}>Cancel</button>
-                    <button type="button" className="btn btn--primary" disabled={!checkSubmitAllowed}>Submit</button>
+                    <button 
+                        type="button" 
+                        className="btn btn--primary" 
+                        disabled={!checkSubmitAllowed}
+                        onClick={handleSubmit}>Submit</button>
                 </div>
                 </form>
             </div>
