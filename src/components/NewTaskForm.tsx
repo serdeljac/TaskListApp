@@ -3,12 +3,12 @@ import type { StoredTaskTypes } from '../types/types'
 
 interface NewTaskFormProps {
     // Called when the user wants to close the popup (e.g. clicks Cancel).
-    onCancel: () => void
+    onCancelFunc: () => void
     //This means task generated the StoredTaskTypes WITHOUT id. id is generated later!
     onSubmit: (task: Omit<StoredTaskTypes, 'id'| 'completed'>) => void
 }
 
-function NewTaskForm({ onCancel, onSubmit}: NewTaskFormProps) {
+function NewTaskForm({ onCancelFunc, onSubmit}: NewTaskFormProps) {
 
     const [name, setName] = useState('')
     const [category, setCategory] = useState('')
@@ -71,7 +71,7 @@ function NewTaskForm({ onCancel, onSubmit}: NewTaskFormProps) {
                 </div>
 
                 <div className="modal__actions">
-                    <button type="button" className="btn btn--ghost" onClick={onCancel}>Cancel</button>
+                    <button type="button" className="btn btn--ghost" onClick={onCancelFunc}>Cancel</button>
                     <button 
                         type="button" 
                         className="btn btn--primary" 

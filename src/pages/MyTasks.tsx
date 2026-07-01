@@ -5,7 +5,17 @@ import type { StoredTaskTypes } from '../types/types'
 import { useState, type ReactNode } from 'react'
 
 const FILTERS = ['All', 'Active', 'Completed']
-const STORAGE_KEY = 'focusdo.tasks' //LocalS torage Name
+const STORAGE_KEY = 'focusdo.tasks' //Local Storage Name
+function storedToRow(task: StoredTaskTypes): StoredTaskTypes {
+    return {
+        id: task.id,
+        name: task.name,
+        completed: task.completed,
+        category: task.category.toLowerCase(), // category strings match our tag names
+        dueDate: task.dueDate,
+        priority: task.priority,
+    }
+}
 
 function readStoredTasks(): StoredTaskTypes[] {
     try {
@@ -13,55 +23,9 @@ function readStoredTasks(): StoredTaskTypes[] {
     } catch { return [] }
 }
 
-
-//This is just a substitute
-const TASK_LIST: StoredTaskTypes[] = [
-    { id: 't1', name: 'Outline project proposal', completed: false, category: 'work', dueDate: 'Today', priority: 'High' },
-]
-
-export const Header = () => {
-
-    const [isFormOpen, setFormOpen] = useState(false)
-
-    function handleAddTask(data: Omit<StoredTaskTypes, 'id' | 'completed'>) {
-        //Assign unique ID to the new task
-        const newTask: StoredTaskTypes = {id: crypto.randomUUID(), ...data, completed: false}
-
-        //Append the updated data to the fetched list of tasks
-        const updated = [...readStoredTasks(), newTask]
-
-        //Append the updated data to the local storage
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
-
-        //Close the form component
-        setFormOpen(false)
-    }
-
-    return (
-        <>
-            <PageHeader
-                title="My Tasks"
-                subtitle="All your tasks in one place."
-                actionLabel="+ New Task"
-                onAction={() => setFormOpen(true)}/>
-
-            {isFormOpen && <NewTaskForm onSubmit={handleAddTask} onCancel={() => setFormOpen(false)}/>}
-
-            <div className="filter-bar">
-                {FILTERS.map((f, i) => (
-                <button key={f} type="button" className={`chip ${i === 0 ? 'chip--active' : ''}`}>
-                    {f}
-                </button>
-                ))}
-            </div>
-            
-        </>
-    )
-}
-
-export const TaskTable = () => {
+export const TaskTable = ({ myTaskList }: { myTaskList: StoredTaskTypes[] }) => {
     const blankList = <li className="task-table__row noTasks">Nothing to Display</li>
-    const resultsHTML: ReactNode = TASK_LIST.length === 0 ? blankList : getList()
+    const resultsHTML: ReactNode = myTaskList.length === 0 ? blankList : getList(myTaskList)
 
     return (
         <>
@@ -80,10 +44,10 @@ export const TaskTable = () => {
     )
 }
 
-function getList() {
+function getList(myTaskList: StoredTaskTypes[]) {
     return (
         <>
-            {TASK_LIST.map((o) => (
+            {myTaskList.map((o) => (
                         <li className={`task-table__row ${o.completed ? 'task-table__row--done' : ''}`} key={o.id}>
                 <span className="task-table__cell task-table__cell--main">
                     <input className="task__check" type="checkbox" defaultChecked={o.completed} />
@@ -94,7 +58,7 @@ function getList() {
                 </span>
                 <span className="task-table__cell task-table__cell--muted">{o.dueDate}</span>
                 <span className="task-table__cell">
-                    <span className={`priority priority--${o.priority.toLowerCase()}`}>{o.priority}</span>
+                    <span className={`priority priority--${o.priority}`}>{o.priority}</span>
                 </span>
                 </li>
             ))}
@@ -105,10 +69,47 @@ function getList() {
 
 
 function Assembly() {
+
+    const [isFormOpen, setFormOpen] = useState(false)
+
+    const [TASKS, setTasks] = useState<StoredTaskTypes[]>(() => [...readStoredTasks().map(storedToRow)])
+
+    function handleAddTask(data: Omit<StoredTaskTypes, 'id' | 'completed'>) {
+        //Assign unique ID to the new task
+        const newTask: StoredTaskTypes = {id: crypto.randomUUID(), ...data, completed: false}
+
+        //Append the updated data to the fetched list of tasks
+        const updated = [...readStoredTasks(), newTask]
+
+        //Append the updated data to the local storage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+
+        setTasks((e) => [...e, storedToRow(newTask)]) //Update the state with the new task
+
+
+        //Close the form component
+        setFormOpen(false)
+    }
+
     return (
         <>
-            <Header />
-            <TaskTable />
+            <PageHeader
+                title="My Tasks"
+                subtitle="All your tasks in one place."
+                actionLabel="+ New Task"
+                onAction={() => setFormOpen(true)}/>
+
+            {isFormOpen && <NewTaskForm onSubmit={handleAddTask} onCancelFunc={() => setFormOpen(false)}/>}
+
+            <div className="filter-bar">
+                {FILTERS.map((f, i) => (
+                <button key={f} type="button" className={`chip ${i === 0 ? 'chip--active' : ''}`}>
+                    {f}
+                </button>
+                ))}
+            </div> 
+
+            <TaskTable myTaskList={TASKS}/>
         </>
     )
 }
