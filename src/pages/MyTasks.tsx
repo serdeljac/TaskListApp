@@ -1,60 +1,89 @@
 import PageHeader from '../components/PageHeader'
 import NewTaskForm from '../components/NewTaskForm'
-import type { StoredTaskTypes } from '../types/types'
+import type { StoredTaskTypes, TaskFilterTypes } from '../types/types'
 import { useState, type ReactNode } from 'react'
+const STORAGE_KEY = 'focusdo.tasks'
+const FILTERS: TaskFilterTypes['filter'][] = ['All', 'Active', 'Completed']
 
-const FILTERS = ['All', 'Active', 'Completed']
-const STORAGE_KEY = 'focusdo.tasks' //Local Storage Name
 
+//This is the array that should be used in the list of tasks
 function storedToRow(task: StoredTaskTypes): StoredTaskTypes {
     return {
         id: task.id,
         name: task.name,
         completed: task.completed,
-        category: task.category.toLowerCase(), // category strings match our tag names
+        category: task.category.toLowerCase(),
         dueDate: task.dueDate,
         priority: task.priority,
     }
 }
 
-function readStoredTasks(): StoredTaskTypes[] {
+//This is used to GET the stored tasks
+function getLocalStorageTasks(): StoredTaskTypes[] {
     try {
         return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]') as StoredTaskTypes[]
-    } catch { return [] }
+    } catch { 
+        return [] 
+    }
 }
 
+//This is used to APPEND the stored tasks
+function appendLocalStorageTasks(tasklist: StoredTaskTypes[]) {
+    const LIST_TO_APPEND = JSON.stringify(tasklist)
+    localStorage.setItem(STORAGE_KEY, LIST_TO_APPEND)
+}
+
+//Change list based on active filter
+// const showTaskList = TASKS.filter
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/****************************************************************************** */
+// ASSEMBLY
+/****************************************************************************** */
 
 function Assembly() {
 
     const [isFormOpen, setFormOpen] = useState(false)
+    const [filter, setFilter] = useState<TaskFilterTypes['filter']>('All')
+    const [TASKS, setTasks] = useState<StoredTaskTypes[]>(() => [...getLocalStorageTasks().map(storedToRow)])
+    const blankList = <li className="task-table__row noTasks">Nothing to Display</li>
+    const resultsHTML: ReactNode = TASKS.length === 0 ? blankList : null
 
-    const [TASKS, setTasks] = useState<StoredTaskTypes[]>(() => [...readStoredTasks().map(storedToRow)])
-
-        const blankList = <li className="task-table__row noTasks">Nothing to Display</li>
-        const resultsHTML: ReactNode = TASKS.length === 0 ? blankList : null
+    const FINAL_TASK_LIST = TASKS.filter((o) => {
+        if (filter === 'Active') return !o.completed
+        if (filter === 'Completed') return o.completed
+        return true
+    })
 
     function handleAddTask(data: Omit<StoredTaskTypes, 'id' | 'completed'>) {
         //Assign unique ID to the new task
         const newTask: StoredTaskTypes = {id: crypto.randomUUID(), ...data, completed: false}
 
-        //Append the updated data to the fetched list of tasks
-        const updated = [...readStoredTasks(), newTask]
-
         //Append the updated data to the local storage
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+        appendLocalStorageTasks([...getLocalStorageTasks(), newTask])
 
         setTasks((e) => [...e, storedToRow(newTask)]) //Update the state with the new task
-
 
         //Close the form component
         setFormOpen(false)
     }
 
     function handleToggleTask(id: string) {
-
         //Get the current list that is appended and switch its completed boolean value
         setTasks((prev) => 
             prev.map((TASKS) => 
@@ -63,9 +92,9 @@ function Assembly() {
         )
 
         //Pull data from the Local Storage and switch the completed value
-        const updated = readStoredTasks().map((o) => 
+        const updated = getLocalStorageTasks().map((o) => 
             o.id === id ? {...o, completed: !o.completed} : o)
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)) //Update the Local Storage with the new data
+        appendLocalStorageTasks(updated) //Update the Local Storage with the new data
     }
 
     return (
@@ -79,9 +108,14 @@ function Assembly() {
             {isFormOpen && <NewTaskForm onSubmit={handleAddTask} onCancelFunc={() => setFormOpen(false)}/>}
 
             <div className="filter-bar">
-                {FILTERS.map((f, i) => (
-                <button key={f} type="button" className={`chip ${i === 0 ? 'chip--active' : ''}`}>
-                    {f}
+                {FILTERS.map((o) => (
+                <button 
+                    key={o} 
+                    type="button" 
+                    className={`chip ${filter === o ? 'chip--active' : ''}`}
+                    onClick={() => setFilter(o)}
+                    >
+                    {o}
                 </button>
                 ))}
             </div>
@@ -95,7 +129,7 @@ function Assembly() {
                     <span>Priority</span>
                 </li>
                 {resultsHTML}
-                {TASKS.map((o) => (
+                {FINAL_TASK_LIST.map((o) => (
                 <li className={`task-table__row ${o.completed ? 'task-table__row--done' : ''}`} key={o.id}>
                     <span className="task-table__cell task-table__cell--main">
                         <input 

@@ -54,3 +54,7 @@ export interface StoredTaskTypes {
   completed: boolean
   dueDate: string // the value from <input type="date">, e.g. "2026-07-01"
 }
+
+export interface TaskFilterTypes {
+  filter: 'All' | 'Active' | 'Completed'
+}
