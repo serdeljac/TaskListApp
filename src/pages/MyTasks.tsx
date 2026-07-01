@@ -1,11 +1,11 @@
 import PageHeader from '../components/PageHeader'
 import NewTaskForm from '../components/NewTaskForm'
 import type { StoredTaskTypes } from '../types/types'
-
 import { useState, type ReactNode } from 'react'
 
 const FILTERS = ['All', 'Active', 'Completed']
 const STORAGE_KEY = 'focusdo.tasks' //Local Storage Name
+
 function storedToRow(task: StoredTaskTypes): StoredTaskTypes {
     return {
         id: task.id,
@@ -23,48 +23,7 @@ function readStoredTasks(): StoredTaskTypes[] {
     } catch { return [] }
 }
 
-export const TaskTable = ({ myTaskList }: { myTaskList: StoredTaskTypes[] }) => {
-    const blankList = <li className="task-table__row noTasks">Nothing to Display</li>
-    const resultsHTML: ReactNode = myTaskList.length === 0 ? blankList : getList(myTaskList)
 
-    return (
-        <>
-            <article className="card">
-                <ul className="task-table">
-                <li className="task-table__head">
-                    <span>Task</span>
-                    <span>Category</span>
-                    <span>Due</span>
-                    <span>Priority</span>
-                </li>
-                {resultsHTML}
-                </ul>
-            </article>
-        </>
-    )
-}
-
-function getList(myTaskList: StoredTaskTypes[]) {
-    return (
-        <>
-            {myTaskList.map((o) => (
-                        <li className={`task-table__row ${o.completed ? 'task-table__row--done' : ''}`} key={o.id}>
-                <span className="task-table__cell task-table__cell--main">
-                    <input className="task__check" type="checkbox" defaultChecked={o.completed} />
-                    {o.name}
-                </span>
-                <span className="task-table__cell">
-                    {o.category && <span className={`tag tag--${o.category}`}>{o.category}</span>}
-                </span>
-                <span className="task-table__cell task-table__cell--muted">{o.dueDate}</span>
-                <span className="task-table__cell">
-                    <span className={`priority priority--${o.priority}`}>{o.priority}</span>
-                </span>
-                </li>
-            ))}
-        </>
-    )
-}
 
 
 
@@ -73,6 +32,9 @@ function Assembly() {
     const [isFormOpen, setFormOpen] = useState(false)
 
     const [TASKS, setTasks] = useState<StoredTaskTypes[]>(() => [...readStoredTasks().map(storedToRow)])
+
+        const blankList = <li className="task-table__row noTasks">Nothing to Display</li>
+        const resultsHTML: ReactNode = TASKS.length === 0 ? blankList : null
 
     function handleAddTask(data: Omit<StoredTaskTypes, 'id' | 'completed'>) {
         //Assign unique ID to the new task
@@ -91,6 +53,21 @@ function Assembly() {
         setFormOpen(false)
     }
 
+    function handleToggleTask(id: string) {
+
+        //Get the current list that is appended and switch its completed boolean value
+        setTasks((prev) => 
+            prev.map((TASKS) => 
+                (TASKS.id === id ? {...TASKS, completed: !TASKS.completed} : TASKS)
+            )
+        )
+
+        //Pull data from the Local Storage and switch the completed value
+        const updated = readStoredTasks().map((o) => 
+            o.id === id ? {...o, completed: !o.completed} : o)
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated)) //Update the Local Storage with the new data
+    }
+
     return (
         <>
             <PageHeader
@@ -107,9 +84,40 @@ function Assembly() {
                     {f}
                 </button>
                 ))}
-            </div> 
+            </div>
 
-            <TaskTable myTaskList={TASKS}/>
+            <article className="card">
+                <ul className="task-table">
+                <li className="task-table__head">
+                    <span>Task</span>
+                    <span>Category</span>
+                    <span>Due</span>
+                    <span>Priority</span>
+                </li>
+                {resultsHTML}
+                {TASKS.map((o) => (
+                <li className={`task-table__row ${o.completed ? 'task-table__row--done' : ''}`} key={o.id}>
+                    <span className="task-table__cell task-table__cell--main">
+                        <input 
+                            className="task__check" 
+                            type="checkbox" 
+                            checked={o.completed}
+                            onChange={() => handleToggleTask(o.id)}
+                            />
+                        {o.name}
+                    </span>
+                    <span className="task-table__cell">
+                        {o.category && <span className={`tag tag--${o.category}`}>{o.category}</span>}
+                    </span>
+                    <span className="task-table__cell task-table__cell--muted">{o.dueDate}</span>
+                    <span className="task-table__cell">
+                        <span className={`priority priority--${o.priority}`}>{o.priority}</span>
+                    </span>
+                </li>
+            ))}
+                </ul>
+            </article>
+
         </>
     )
 }
