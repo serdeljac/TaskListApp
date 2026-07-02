@@ -55,7 +55,8 @@
     &__head,
     &__row {
         display: grid;
-        grid-template-columns: 2.5fr 1fr 1fr 1fr;
+        // last "auto" column is the narrow delete-button column
+        grid-template-columns: 2.5fr 1fr 1fr 1fr auto;
         align-items: center;
         gap: 1rem;
     }
@@ -78,9 +79,14 @@
             border-bottom: none;
         }
 
-        &--done .task-table__cell--main {
-            text-decoration: line-through;
-            color: $text-muted;
+        // Completed treatment: dim the whole row and strike through the task name.
+        &--done {
+            opacity: 0.55;
+
+            .task-table__cell--main {
+                text-decoration: line-through;
+                color: $text-muted;
+            }
         }
     }
 
@@ -96,6 +102,30 @@
         &--muted {
             color: $text-muted;
         }
+
+        &--action {
+            justify-content: flex-end;
+        }
+
+        // pushes the trash to the right edge
+    }
+}
+
+.task-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: $text-muted;
+    padding: 0.3rem;
+    border-radius: 6px;
+    transition: color 0.15s ease, background 0.15s ease;
+
+    &:hover {
+        color: #ef4444; // red on hover to signal a destructive action
+        background: rgba(#ef4444, 0.1);
     }
 }
 
@@ -443,9 +473,10 @@
     }
 
     // On narrow screens, drop the Category + Priority columns from the task table.
+    // Remaining columns: Task, Due, and the delete button.
     .task-table__head,
     .task-table__row {
-        grid-template-columns: 2fr 1fr;
+        grid-template-columns: 2fr 1fr auto;
     }
 
     .task-table__head :nth-child(2),
