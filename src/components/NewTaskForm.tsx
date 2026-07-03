@@ -12,14 +12,14 @@ function NewTaskForm({ onCancelFunc, onSubmit}: NewTaskFormProps) {
 
     const [name, setName] = useState('')
     const [category, setCategory] = useState('')
-    const [priority, setPriority] = useState('')
+    const [priority, setPriority] = useState<StoredTaskTypes['priority'] | ''>('')
     const [dueDate, setDate] = useState('')
     const checkSubmitAllowed = name.trim() !== '' && category.trim() !== '' && dueDate.trim() !== '' && priority.trim() !== ''
 
     function handleSubmit() {
         //Prevents submit when not valid
-        if (!checkSubmitAllowed) return
-        //Submit this object Array 
+        if (!checkSubmitAllowed || priority === '') return
+        //Submit this object Array
         onSubmit({ name: name.trim(), category, priority, dueDate })
     }
 
@@ -56,12 +56,12 @@ function NewTaskForm({ onCancelFunc, onSubmit}: NewTaskFormProps) {
 
                 <div className="form-field">
                     <label className="form-field__label" htmlFor="task-category" >Priority</label>
-                        <select id="task-category" className="form-field__input" 
-                        onChange={(event) => setPriority(event.target.value)}>
+                        <select id="task-category" className="form-field__input"
+                        onChange={(event) => setPriority(event.target.value as StoredTaskTypes['priority'])}>
                         <option value="">Select a Priority</option>
-                        <option value="high">High</option>
-                        <option value="medium">Medium</option>
-                        <option value="low">Low</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
                     </select>
                 </div>
 

@@ -50,11 +50,24 @@ export interface StoredTaskTypes {
   id: string
   name: string
   category: string
-  priority: string
+  priority: 'high' | 'medium' | 'low'
   completed: boolean
-  dueDate: string // the value from <input type="date">, e.g. "2026-07-01"
+  dueDate: string
 }
 
 export interface TaskFilterTypes {
   filter: 'All' | 'Active' | 'Completed'
+}
+
+
+// Used for Reordering list
+export type sortTableName = 'name' | 'category' | 'priority'
+export type sortTableDirection = 'asc' | 'desc'
+
+export interface sortTableHeaders {
+  label: string
+  sortKey: sortTableName
+  activeKey: sortTableName | null
+  direction: sortTableDirection
+  onSort: (key: sortTableName) => void
 }

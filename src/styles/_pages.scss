@@ -109,6 +109,30 @@
 
         // pushes the trash to the right edge
     }
+
+    // Clickable column header — looks like the plain <span> it replaces, but
+    // with a pointer cursor and a hover state to hint that it's interactive.
+    &__sort {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        border: none;
+        background: none;
+        padding: 0;
+        font: inherit;
+        text-transform: inherit;
+        letter-spacing: inherit;
+        color: inherit;
+        cursor: pointer;
+
+        &:hover {
+            color: $text;
+        }
+    }
+
+    &__sort-arrow {
+        font-size: 0.65rem;
+    }
 }
 
 .task-delete {
